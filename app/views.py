@@ -48,26 +48,6 @@ def form_errors(form):
     return error_messages
 
 
-# Here we define a function to collect form errors from Flask-WTF
-# which we can later use
-@app.route("/api/upload",methods=['POST']) 
-def upload():
-    form=UploadForm()
-    if request.method == 'POST'and form.validate_on_submit():
-        Description=request.form['Description']
-        Photo=form.Photo.data 
-        filename=secure_filename(Photo.filename)
-        Photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-        return jsonify({"message": "File Upload Successful",
-                 "filename":filename,
-                  "Description":Description 
-        })
-        
-    errors=form_errors(form)
-    return jsonify({
-        "errors":errors
-    })
-
 ###
 # The functions below should be applicable to all Flask apps.
 ###
@@ -90,6 +70,27 @@ def add_header(response):
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'
     return response
+
+
+# Here we define a function to collect form errors from Flask-WTF
+# which we can later use
+@app.route("/api/upload",methods=['POST']) 
+def upload():
+    form=UploadForm()
+    if request.method == 'POST'and form.validate_on_submit():
+        Description=request.form['Description']
+        Photo=form.Photo.data 
+        filename=secure_filename(Photo.filename)
+        Photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+        return jsonify({"message": "File Upload Successful",
+                 "filename":filename,
+                  "Description":Description 
+        })
+        
+    errors=form_errors(form)
+    return jsonify({
+        "errors":errors
+    })
 
 
 @app.errorhandler(404)
