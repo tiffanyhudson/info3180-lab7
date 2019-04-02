@@ -32,6 +32,20 @@ def index(path):
     Also we will render the initial webpage and then let VueJS take control.
     """
     return render_template('index.html')
+    
+    
+def form_errors(form):
+    error_messages = []
+    """Collects form errors"""
+    for field, errors in form.errors.items():
+        for error in errors:
+            message = u"Error in the %s field - %s" % (
+                    getattr(form, field).label.text,
+                    error
+                )
+            error_messages.append(message)
+
+    return error_messages
 
 
 # Here we define a function to collect form errors from Flask-WTF
@@ -48,7 +62,8 @@ def upload():
                  "filename":filename,
                   "Description":Description 
         })
-    errors=form_errors(form) 
+        
+    errors=form_errors(form)
     return jsonify({
         "errors":errors
     })
